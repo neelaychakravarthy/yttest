@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<h1>Home</h1>
+
+<table>
+    <tr>
+        <td>
+            <a href="/authorize">Test Auth Flow Directly</a>
+        </td>
+        <td>
+            Go directly through the authorization flow. If there are stored credentials, you may still be prompted to reauthorize.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="/api_select">Select API</a>
+        </td>
+        <td>
+            Select what type of data you want. If no credentials stored, go through authorization flow.
+        </td>
+    </tr>
+</table>
+
+{% endblock %}
