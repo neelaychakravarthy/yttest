@@ -17,6 +17,9 @@ class Scopes(db.Model):
     credential_id = db.Column(db.Integer, db.ForeignKey('credentials.id'), nullable=False)
     scope = db.Column(db.String(100), nullable=False)
 
+    def __repr__(self):
+        return f" {self.scope} "
+
 class Jobs(db.Model):
     id = db.Column(db.String(40), primary_key=True, autoincrement=False)
     report_type_id = db.Column(db.String(100), nullable=False)

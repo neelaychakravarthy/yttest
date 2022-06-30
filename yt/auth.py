@@ -23,3 +23,8 @@ def get_credentials(state):
     authorization_response = flask.request.url
     flow.fetch_token(authorization_response=authorization_response)
     return flow.credentials
+
+def get_google_api(API_SERVICE_NAME, API_VERSION, credentials):
+    google_credentials = google.oauth2.credentials.Credentials(credentials.token, refresh_token=credentials.refresh_token,
+    token_uri=credentials.token_uri, client_id=credentials.client_id, client_secret=credentials.client_secret, scopes=credentials.scopes)
+    return googleapiclient.discovery.build(API_SERVICE_NAME, API_VERSION, credentials=google_credentials)
