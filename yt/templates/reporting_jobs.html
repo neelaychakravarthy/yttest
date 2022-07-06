@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<h1>Jobs</h1>
+
+<table>
+    <tr>
+        <td>
+            JOB ID
+        </td>
+        <td>
+            JOB NAME
+        </td>
+    </tr>
+    {% for job in jobs %}
+    <tr>
+        <td>
+            {{ job.id }}
+        </td>
+        <td>
+            {{ job.name }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

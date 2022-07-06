@@ -24,11 +24,10 @@ class Jobs(db.Model):
     id = db.Column(db.String(40), primary_key=True, autoincrement=False)
     report_type_id = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    create_time = db.Column(db.DateTime, nullable=False, unique=True)
-    expire_time = db.Column(db.DateTime, nullable=False, unique=True)
+    create_time = db.Column(db.String(25), nullable=False, unique=True)
 
     def __repr__(self):
-        return f"Job[ID: '{self.id}', TYPE_ID: '{self.report_type_id}', NAME: '{self.name}', CREATED: '{self.create_time}', EXPIRES: '{self.expire_time}']"
+        return f"Job[ID: '{self.id}', TYPE_ID: '{self.report_type_id}', NAME: '{self.name}', CREATED: '{self.create_time}']"
 
 class Reports(db.Model):
     id = db.Column(db.String(40), primary_key=True, autoincrement=False)

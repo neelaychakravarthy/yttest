@@ -3,6 +3,10 @@ import flask
 from yt import app, auth, db, models
 import json
 
+#TODO: Change the way we store SCOPES. When refreshing credentials, google auth does not recognize the scope object we use. We can do it one at
+# a time, as recomended, or we can store it in the credentials model itself with PickleType. Either way, we must remove the Scopes model.
+
+#TODO: Job creation page, for if there are no jobs
 
 @app.route('/')
 def index():
@@ -47,15 +51,19 @@ def ytreports():
     youtube_reporting = auth.get_google_api('youtubereporting', 'v1', credentials=credentials)
     jobs = youtube_reporting.jobs().list().execute()
 
-    #TODO: Change the way we store SCOPES. When refreshing credentials, google auth does not recognize the scope object we use. We can do it one at
-    # a time, as recomended, or we can store it in the credentials model itself with PickleType. Either way, we must remove the Scopes model.
+    for job in jobs['jobs']:
 
-  #  for job in jobs:
-        # print(job)
-        # exists = db.session.query(models.Jobs.id).filter_by(json.loads(job).id).first()
-        # if exists is None:
-        #     db.session.add(job)
-        #     db.commit()
+        exists = models.Jobs.query.filter_by(id=job['id']).first()
+        print(exists)
+        if exists is None:
+            print('Job was not in database, so added job to database.')
+            db_job = models.Jobs(id=job['id'], report_type_id=job['reportTypeId'], name=job['name'], create_time=job['createTime'])
+            db.session.add(db_job)
+            db.session.commit()
+    
+    jobs = models.Jobs.query.all()
+    return flask.render_template('reporting_jobs.html', jobs=jobs)
+
 
 @app.route('/ytanalytics')
 def ytanalytics():
