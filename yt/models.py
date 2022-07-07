@@ -24,7 +24,7 @@ class Jobs(db.Model):
     id = db.Column(db.String(40), primary_key=True, autoincrement=False)
     report_type_id = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    create_time = db.Column(db.String(25), nullable=False, unique=True)
+    create_time = db.Column(db.String(40), nullable=False, unique=True)
 
     def __repr__(self):
         return f"Job[ID: '{self.id}', TYPE_ID: '{self.report_type_id}', NAME: '{self.name}', CREATED: '{self.create_time}']"
@@ -32,9 +32,8 @@ class Jobs(db.Model):
 class Reports(db.Model):
     id = db.Column(db.String(40), primary_key=True, autoincrement=False)
     job_id = db.Column(db.String(40), nullable=False)
-    start_time = db.Column(db.DateTime, nullable=False)
-    end_time = db.Column(db.DateTime, nullable=False)
-    create_time = db.Column(db.DateTime, unique=True, nullable=False)
-    job_expire_time = db.Column(db.DateTime, nullable=False)
+    start_time = db.Column(db.String(40), nullable=False)
+    end_time = db.Column(db.String(40), nullable=False)
+    create_time = db.Column(db.String(40), unique=True, nullable=False)
     download_url = db.Column(db.String(1000), nullable=False, unique=True)
 

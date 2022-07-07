@@ -1,4 +1,5 @@
 import flask
+import requests
 
 from yt import app, auth, db, models
 import json
@@ -7,6 +8,8 @@ import json
 # a time, as recomended, or we can store it in the credentials model itself with PickleType. Either way, we must remove the Scopes model.
 
 #TODO: Job creation page, for if there are no jobs
+
+#TODO: Database migration
 
 @app.route('/')
 def index():
@@ -54,15 +57,46 @@ def ytreports():
     for job in jobs['jobs']:
 
         exists = models.Jobs.query.filter_by(id=job['id']).first()
-        print(exists)
         if exists is None:
-            print('Job was not in database, so added job to database.')
             db_job = models.Jobs(id=job['id'], report_type_id=job['reportTypeId'], name=job['name'], create_time=job['createTime'])
             db.session.add(db_job)
             db.session.commit()
     
     jobs = models.Jobs.query.all()
     return flask.render_template('reporting_jobs.html', jobs=jobs)
+
+@app.route('/reports', defaults={'job_id' : 'NONE'})
+@app.route('/reports/<string:job_id>')
+def reports(job_id):
+    if job_id == 'NONE':
+        return 'No Job ID provided. Please try again'
+    else:
+        credentials = models.Credentials.query.get(1)
+        if credentials is None:
+            return flask.redirect(flask.url_for('authorize'))
+
+        youtube_reporting = auth.get_google_api('youtubereporting', 'v1', credentials=credentials)
+        reports=youtube_reporting.jobs().reports().list(jobId=job_id).execute()
+        for report in reports['reports']:
+            exists = models.Reports.query.filter_by(id=report['id']).first()
+            if exists is None:
+                db_report = models.Reports(id=report['id'], job_id=report['jobId'], start_time=report['startTime'], end_time=report['endTime'], create_time=report['createTime'], download_url=report['downloadUrl'])
+                db.session.add(db_report)
+                db.session.commit()
+        
+        reports = models.Reports.query.all()
+        return flask.render_template('reports.html', reports=reports)
+
+@app.route('/download', defaults={'url' : 'NONE'})
+@app.route('/download/<path:url>')
+def download(url):
+    if url == None:
+        return 'Something went wrong. Please try again.'
+    else:
+        token = 'Bearer ' + models.Credentials.query.get(1).token
+        headers = {'Authorization' : token, 'Accept-Encoding' : 'gzip'}
+        response = requests.get(url, headers=headers)
+        return 'Content of Report: \n' + str(response.content)
 
 
 @app.route('/ytanalytics')

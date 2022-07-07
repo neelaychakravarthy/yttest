@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<h1>Reports</h1>
+
+<table>
+    <tr>
+        <td>
+            REPORT ID
+        </td>
+        <td>
+            JOB ID
+        </td>
+        <td>
+            START TIME
+        </td>
+        <td>
+            END TIME
+        </td>
+        <td>
+            CREATE TIME
+        </td>
+        <td>
+            DOWNLOAD
+        </td>
+    </tr>
+    {% for report in reports %}
+    <tr>
+        <td>
+            {{ report.id }}
+        </td>
+        <td>
+            {{ report.job_id }}
+        </td>
+        <td>
+            {{ report.start_time }}
+        </td>
+        <td>
+            {{ report.end_time }}
+        </td>
+        <td>
+            {{ report.create_time }}
+        </td>
+        <td>
+            <a href="/download/{{ report.download_url }}">Download</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

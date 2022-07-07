@@ -4,7 +4,7 @@ import googleapiclient.discovery
 import flask
 
 CLIENT_SECRETS_FILE = "yt/json/client_secret.json"
-SCOPES = ['https://www.googleapis.com/auth/yt-analytics-monetary.readonly', 'https://www.googleapis.com/auth/youtube.force-ssl', 'https://www.googleapis.com/auth/yt-analytics.readonly']
+SCOPES = ['https://www.googleapis.com/auth/yt-analytics-monetary.readonly', 'https://www.googleapis.com/auth/yt-analytics.readonly', 'https://www.googleapis.com/auth/youtube.force-ssl']
 
 def get_auth_url():
 
