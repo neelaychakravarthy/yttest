@@ -31,12 +31,8 @@ def callback():
     db.session.commit()
 
     db_creds = models.Credentials(token=credentials.token, refresh_token=credentials.refresh_token, 
-    token_uri=credentials.token_uri, client_id=credentials.client_id, client_secret=credentials.client_secret)
+    token_uri=credentials.token_uri, client_id=credentials.client_id, client_secret=credentials.client_secret, scopes=credentials.scopes)
     db.session.add(db_creds)
-    db.session.commit()
-    for scopes in credentials.scopes:
-        db_scope = models.Scopes(credential_id=db_creds.id, scope=scopes)
-        db.session.add(db_scope)
     db.session.commit()
 
     return flask.render_template('callback.html')
