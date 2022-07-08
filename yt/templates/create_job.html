@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<h1>Create New Reporting Job</h1>
+
+<form method="POST">
+    <label for="report_type">Select Job Type:</label>
+    <select name="report_type" id="report_type">
+        <option value="channel_annotations_a1">Channel Annotations</option>
+        <option value="channel_basic_a2">Channel Basic</option>
+        <option value="channel_cards_a1">Channel Cards</option>
+        <option value="channel_combined_a2">Channel Combined</option>
+        <option value="channel_demographics_a1">Channel Demographics</option>
+        <option value="channel_device_os_a2">Channel Device OS</option>
+        <option value="channel_end_screens_a1">Channel End Screens</option>
+        <option value="channel_playback_location_a2">Channel Playback Location</option>
+        <option value="channel_province_a2">Channel Province</option>
+        <option value="channel_sharing_service_a1">Channel Sharing Service</option>
+        <option value="channel_subtitles_a2">Channel Subtitles</option>
+        <option value="channel_traffic_source_a2">Channel Traffic Source</option>
+    </select>
+    <label for="name">Job Name:</label>
+    <input type="string" name="name" id="name"/>
+
+    <input type="submit" value="Add Job"/>
+</form>
+
+{% endblock %}

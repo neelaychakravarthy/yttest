@@ -4,9 +4,6 @@ import requests
 from yt import app, auth, db, models
 import json
 
-#TODO: Change the way we store SCOPES. When refreshing credentials, google auth does not recognize the scope object we use. We can do it one at
-# a time, as recomended, or we can store it in the credentials model itself with PickleType. Either way, we must remove the Scopes model.
-
 #TODO: Job creation page, for if there are no jobs
 
 #TODO: Database migration
@@ -61,26 +58,40 @@ def ytreports():
     jobs = models.Jobs.query.all()
     return flask.render_template('reporting_jobs.html', jobs=jobs)
 
+@app.route('/delete_job', defaults={'job_id' : 'NONE'})
+@app.route('/delete_job/<string:job_id>')
+def delete_job(job_id):
+    credentials = models.Credentials.query.get(1)
+    if credentials is None:
+        return flask.redirect(flask.url_for('authorize'))
+    youtube_reporting = auth.get_google_api('youtubereporting', 'v1', credentials=credentials)
+    youtube_reporting.jobs().delete(jobId=job_id).execute()
+    models.Jobs.query.filter_by(id=job_id).delete()
+    db.session.commit()
+    return flask.redirect(flask.url_for('ytreports'))
+
 @app.route('/reports', defaults={'job_id' : 'NONE'})
 @app.route('/reports/<string:job_id>')
 def reports(job_id):
     if job_id == 'NONE':
         return 'No Job ID provided. Please try again'
     else:
+        print(job_id)
         credentials = models.Credentials.query.get(1)
         if credentials is None:
             return flask.redirect(flask.url_for('authorize'))
 
         youtube_reporting = auth.get_google_api('youtubereporting', 'v1', credentials=credentials)
         reports=youtube_reporting.jobs().reports().list(jobId=job_id).execute()
-        for report in reports['reports']:
-            exists = models.Reports.query.filter_by(id=report['id']).first()
-            if exists is None:
-                db_report = models.Reports(id=report['id'], job_id=report['jobId'], start_time=report['startTime'], end_time=report['endTime'], create_time=report['createTime'], download_url=report['downloadUrl'])
-                db.session.add(db_report)
-                db.session.commit()
+        if reports:
+            for report in reports['reports']:
+                exists = models.Reports.query.filter_by(id=report['id']).first()
+                if exists is None:
+                    db_report = models.Reports(id=report['id'], job_id=report['jobId'], start_time=report['startTime'], end_time=report['endTime'], create_time=report['createTime'], download_url=report['downloadUrl'])
+                    db.session.add(db_report)
+                    db.session.commit()
         
-        reports = models.Reports.query.all()
+        reports = models.Reports.query.filter_by(job_id=job_id)
         return flask.render_template('reports.html', reports=reports)
 
 @app.route('/download', defaults={'url' : 'NONE'})
@@ -94,6 +105,23 @@ def download(url):
         response = requests.get(url, headers=headers)
         return 'Content of Report: \n' + str(response.content)
 
+@app.route('/create_job', methods=['GET', 'POST'])
+def create_job():
+    if flask.request.method == 'GET':
+        return flask.render_template('create_job.html')
+    if flask.request.method == 'POST':
+        report_type=flask.request.form.get('report_type')
+        name=flask.request.form.get('name')
+
+        if report_type is None or name is None:
+            return 'Please input a valid name or report type.'
+        credentials = models.Credentials.query.get(1)
+        if credentials is None:
+            return flask.redirect(flask.url_for('authorize'))
+        youtube_reporting = auth.get_google_api('youtubereporting', 'v1', credentials=credentials)
+        youtube_reporting.jobs().create(body=dict(reportTypeId=report_type, name=name)).execute()
+        return flask.redirect(flask.url_for('ytreports'))
+            
 
 @app.route('/ytanalytics')
 def ytanalytics():

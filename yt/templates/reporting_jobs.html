@@ -18,6 +18,9 @@
         <td>
             REPORTS
         </td>
+        <td>
+            DELETE
+        </td>
     </tr>
     {% for job in jobs %}
     <tr>
@@ -30,8 +33,13 @@
         <td>
             <a href="/reports/{{ job.id }}">Click here to see reports</a>
         </td>
+        <td>
+            <a href="/delete_job/{{ job.id }}">Delete Job</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
+
+<a href='/create_job'><button>Create New Job</button></a>
 
 {% endblock %}
