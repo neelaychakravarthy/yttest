@@ -29,3 +29,13 @@ class Reports(db.Model):
     create_time = db.Column(db.String(40), unique=True, nullable=False)
     download_url = db.Column(db.String(1000), nullable=False, unique=True)
 
+class Videos(db.Model):
+    id = db.Column(db.String(12), primary_key=True, autoincrement=False)
+    name = db.Column(db.String(100), nullable=False)
+
+class VideoStats(db.Model):
+    id = db.Column(db.String(12), primary_key=True, autoincrement=False)
+    views = db.Column(db.String(10), nullable=False)
+    likes = db.Column(db.String(10), nullable=False)
+    dislikes = db.Column(db.String(10), nullable=False)
+    comments = db.Column(db.String(10), nullable=False)

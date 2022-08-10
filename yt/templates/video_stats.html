@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<h1>STATS FOR VIDEO ID: {{ video_stats.id }} </h1>
+
+<table>
+    <tr>
+        <td>
+            ID
+        </td>
+        <td>
+            VIEWS
+        </td>
+        <td>
+            LIKES
+        </td>
+        <td>
+            DISLIKES
+        </td>
+        <td>
+            COMMENTS
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{ video_stats.id }}
+        </td>
+        <td>
+            {{ video_stats.views }}
+        </td>
+        <td>
+            {{ video_stats.likes }}
+        </td>
+        <td>
+            {{ video_stats.dislikes }}
+        </td>
+        <td>
+            {{ video_stats.comments }}
+        </td>
+    </tr>
+</table>
+
+{% endblock %}

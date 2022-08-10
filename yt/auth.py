@@ -4,8 +4,8 @@ import googleapiclient.discovery
 import flask
 
 CLIENT_SECRETS_FILE = "yt/json/client_secret.json"
-#SCOPES = ['https://www.googleapis.com/auth/yt-analytics-monetary.readonly', 'https://www.googleapis.com/auth/yt-analytics.readonly', 'https://www.googleapis.com/auth/youtube.force-ssl']
-SCOPES = 'https://www.googleapis.com/auth/yt-analytics-monetary.readonly https://www.googleapis.com/auth/yt-analytics.readonly https://www.googleapis.com/auth/youtube.force-ssl'
+SCOPES = ['https://www.googleapis.com/auth/yt-analytics-monetary.readonly', 'https://www.googleapis.com/auth/yt-analytics.readonly', 'https://www.googleapis.com/auth/youtube.force-ssl']
+#SCOPES = 'https://www.googleapis.com/auth/yt-analytics-monetary.readonly, https://www.googleapis.com/auth/yt-analytics.readonly, https://www.googleapis.com/auth/youtube.force-ssl'
 
 def get_auth_url():
 
@@ -26,6 +26,6 @@ def get_credentials(state):
     return flow.credentials
 
 def get_google_api(API_SERVICE_NAME, API_VERSION, credentials):
-    google_credentials = google.oauth2.credentials.Credentials(credentials.token, refresh_token=credentials.refresh_token,
-    token_uri=credentials.token_uri, client_id=credentials.client_id, client_secret=credentials.client_secret, scopes=credentials.scopes)
+    google_credentials = google.oauth2.credentials.Credentials(credentials["token"], refresh_token=credentials["refresh_token"],
+    token_uri=credentials["token_uri"], client_id=credentials["client_id"], client_secret=credentials["client_secret"], scopes=credentials["scopes"])
     return googleapiclient.discovery.build(API_SERVICE_NAME, API_VERSION, credentials=google_credentials)
